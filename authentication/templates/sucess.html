@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .success{
+            color:blue;
+        }
+        .info{
+            color:red;
+        }
+    </style>
+
+</head>
+<body>
+    <h1>Profile page</h1>
+    <h2>Welcome{{name}}</h2>
+    {% if messages %}
+    {% for message in messages %}
+            <small {% if message.tags %} class={{message.tags}} {% endif %}> {{message}} </small>
+               
+    {% endfor %}
+{% endif %}
+<a href="{% url 'logout' %}">logout</a>
+<a href="{% url 'changepass' %}">changepassword</a>
+<a href="{% url 'changepass1' %}">changepassword1</a>
+</body>
+</html>
