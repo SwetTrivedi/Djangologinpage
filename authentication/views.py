@@ -51,9 +51,26 @@ def userlogin(request):
 
 
 # profile page
+from .forms import Edituser,EditAdmin
 def profile(request):
     if request.user.is_authenticated:
-        return render(request,'sucess.html',{'name':request.user})
+        #this code is edit form
+        if request.method=='POST':
+
+            if request.user.is_superuser==True:
+                fm=EditAdmin(request.POST ,instance=request.user)
+            else:
+                fm=Edituser(request.POST ,instance=request.user)
+            if fm.is_valid():
+                messages.success(request,"Updated Sucessfully!!")
+                fm.save()
+
+        else:
+            if request.user.is_superuser==True:
+                fm =EditAdmin(instance=request.user)
+            else:
+                fm=Edituser(instance=request.user)
+        return render(request,'sucess.html',{'name':request.user,'form':fm})
     else:
         return HttpResponseRedirect('/login/')
 
@@ -102,16 +119,3 @@ def userpasschange1(request):
     else:
        return HttpResponseRedirect('/login/')
     
-
-
-
-# this is Edit form 
-# Today i learn about :-
-
-# 1. Today i solved the error
-
-# 2. Create a Profile page and after login profile page will be render and use the request.user.is_authenticated method if user already loged in then the profile page will be show otherwise redirect the login page.
-
-# 3. Create a logout button and link with profile page and when we click on that button then we go to the login page 
-
-# 4. 
