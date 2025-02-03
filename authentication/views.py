@@ -25,7 +25,9 @@ def sign_up(request):
          fm=signup(request.POST)
          if fm.is_valid():
             messages.success(request,'Registraton Sucessfully !!! ')
-            fm.save()
+            user=fm.save()#ab ham group vise permission denge uper group ko import neeche gya hai
+            group=Group.objects.get(name='editor')
+            user.groups.add(group)
             #  messages.add_message(request,messages.SUCCESS,'Registartion Sucessfully !!')
     else:
         fm=signup()
@@ -44,13 +46,17 @@ def userlogin(request):
             if user is not None:
                 login(request,user)
                 messages.success(request," login  sucessfully  ")
-                return HttpResponseRedirect("/profile/")
+                return HttpResponseRedirect("/dashboard/")
+                # return HttpResponseRedirect("/profile/")
     else:
         fm=AuthenticationForm()
     return render(request,'userlogin.html',{'form':fm})
 
 
 # profile page
+
+from django.contrib.auth.models import User,Group
+
 from .forms import Edituser,EditAdmin
 def profile(request):
     if request.user.is_authenticated:
@@ -59,8 +65,10 @@ def profile(request):
 
             if request.user.is_superuser==True:
                 fm=EditAdmin(request.POST ,instance=request.user)
+                users=User.objects.all()
             else:
                 fm=Edituser(request.POST ,instance=request.user)
+                users=None
             if fm.is_valid():
                 messages.success(request,"Updated Sucessfully!!")
                 fm.save()
@@ -68,9 +76,11 @@ def profile(request):
         else:
             if request.user.is_superuser==True:
                 fm =EditAdmin(instance=request.user)
+                users=User.objects.all()
             else:
                 fm=Edituser(instance=request.user)
-        return render(request,'sucess.html',{'name':request.user,'form':fm})
+                users=None
+        return render(request,'sucess.html',{'name':request.user,'form':fm,'user':users})
     else:
         return HttpResponseRedirect('/login/')
 
@@ -99,7 +109,7 @@ def userpasschange(request):
             fm=PasswordChangeForm(user=request.user)
         return render(request,'change.html',{'form':fm})
     else:
-       return HttpResponseRedirect('/login/')
+       return HttpResponseRedirect('/profile/')
 
 # this is password change without old password form
 
@@ -119,3 +129,22 @@ def userpasschange1(request):
     else:
        return HttpResponseRedirect('/login/')
     
+
+
+
+# click karne per user ki details dikhe
+def userdetail(request,id):
+    if request.user.is_authenticated:
+        pi=User.objects.get(pk=id)
+        fm=EditAdmin(instance=pi)
+        return render(request,'userdetail.html',{'form':fm})
+    
+    else:
+        return HttpResponseRedirect('/login/')
+    
+
+def userdashboard(request):
+    if request.user.is_authenticated:
+        return render(request,'dashboard.html',{'name':request.user.username})
+    else:
+        return HttpResponseRedirect('/login/')

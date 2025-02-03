@@ -17,6 +17,14 @@
 <body>
     <h1>Profile page</h1>
     <h2>Welcome  {{name}}</h2>
+
+    {% if user != None %}
+    <h3>List of Users</h3>
+        {% for user in user %}
+           <a href="{% url 'userdetail' user.id %}">{{user.username}}</a><br><br>
+        {% endfor %}
+    {% endif %}
+
     {% if messages %}
     {% for message in messages %}
             <small {% if message.tags %} class={{message.tags}} {% endif %}> {{message}} </small>
@@ -29,10 +37,10 @@
     {% for i in form %}
     {{i.label_tag}} {{i}} {{i.errors|striptags}}<br><br>
     {% endfor %}
-    <input type="submit" value="submit"><br>
+    <input type="submit" value="submit"><br><br>
 </form>
-<a href="{% url 'logout' %}">logout</a>
-<a href="{% url 'changepass' %}">changepassword</a>
+<a href="{% url 'logout' %}">logout</a><br><br>
+<a href="{% url 'changepass' %}">changepassword</a><br><br>
 <a href="{% url 'changepass1' %}">changepassword1</a>
 </body>
 </html>

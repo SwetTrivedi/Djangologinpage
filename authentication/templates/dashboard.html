@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Welcome {{name}}</h2>
+    {% if perms.authentication.delete_blog %}
+        <input type="button" value="Delete"><br><br>
+    {% else %}
+        <h2>No permission  </h2>
+    {% endif %}
+
+    {% if perms.authentication.add_blog %}
+        <input type="button" value=" ADD"><br><br>
+    {% endif %}
+    <a href="{% url 'logout' %}">logout</a><br><br>
+</body>
+</html>
